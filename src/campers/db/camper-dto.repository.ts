@@ -26,4 +26,18 @@ export class CamperDtoRepository {
 			};
 		})
 	}
+
+	async findById(camperId: string): Promise<CamperDto> {
+		const camper = await this.camperModel.findById(camperId, { lean: true });
+
+		const allergiesLower = camper.allergies.map(allergy => {
+			return allergy.toLocaleLowerCase();
+		});
+		const isAllergicToPeanuts = allergiesLower.includes("peanuts");
+
+		return {
+			...camper,
+			isAllergicToPeanuts
+		}
+	}
 }

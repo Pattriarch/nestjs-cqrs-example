@@ -6,6 +6,7 @@ import { CreateCamperCommand } from "./commands/create-campers/create-camper.com
 import { UpdateAllergiesCommand } from "./commands/update-allergies/update-allergies.command";
 import { CampersQuery } from "./queries/campers.query";
 import { CamperDto } from "./camper.dto";
+import { GetCamperQuery } from "./queries/get-camper.query";
 
 @Controller("create-campers")
 export class CampersController {
@@ -16,13 +17,15 @@ export class CampersController {
 	}
 
 	@Get(":id")
-	async getCamper(@Param("id") camperId: string): Promise<void> {
-		return null;
+	async getCamper(@Param("id") camperId: string): Promise<CamperDto> {
+		return await this.queryBus.execute<GetCamperQuery, CamperDto>(
+			new GetCamperQuery(camperId)
+		);
 	}
 
 	@Get()
-	async getCampers(): Promise<void> {
-      await this.queryBus.execute<CampersQuery, CamperDto[]>(
+	async getCampers(): Promise<CamperDto[]> {
+      return await this.queryBus.execute<CampersQuery, CamperDto[]>(
           new CampersQuery()
       );
 	}
